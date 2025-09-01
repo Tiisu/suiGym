@@ -12,7 +12,7 @@ interface Testimonial {
   nftsEarned: number
   streakDays: number
   location: string
-  gradient: string
+  bgColor: string
 }
 
 export function TestimonialSection() {

@@ -14,7 +14,16 @@ import './index.css'
 function App() {
   const [isConnected, setIsConnected] = useState(false)
   const [currentSection, setCurrentSection] = useState('hero')
-  const [userProfile, setUserProfile] = useState(null)
+  const [userProfile, setUserProfile] = useState<{
+    username: string
+    streak: number
+    total_logs: number
+    weight_lost: number
+    current_weight?: number
+    starting_weight?: number
+    total_nfts: number
+    longest_streak: number
+  } | null>(null)
 
   const handleConnectWallet = () => {
     // Simulate wallet connection

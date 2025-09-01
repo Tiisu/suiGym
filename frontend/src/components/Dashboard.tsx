@@ -1,18 +1,15 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { 
-  User, 
   Flame, 
-  Target, 
   TrendingDown, 
   Calendar,
   Plus,
   Trophy,
-  Zap,
-  Weight
+  Zap
 } from "lucide-react"
 import { useState } from "react"
 
@@ -26,7 +23,7 @@ interface DashboardProps {
     starting_weight?: number
     total_nfts: number
     longest_streak: number
-  }
+  } | null
   onLogWorkout: () => void
   onUpdateWeight: (weight: number) => void
 }
