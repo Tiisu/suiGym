@@ -23,43 +23,55 @@ export function Header({ isConnected, onConnectWallet, currentSection, onSection
         </div>
 
         {/* Navigation */}
-        {isConnected && (
-          <nav className="hidden md:flex items-center space-x-6">
-            <button
-              onClick={() => onSectionChange('dashboard')}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                currentSection === 'dashboard'
-                  ? 'bg-sui-green-100 text-sui-green-700'
-                  : 'text-gray-600 hover:text-sui-green-600'
-              }`}
-            >
-              <BarChart3 className="h-4 w-4" />
-              <span>Dashboard</span>
-            </button>
-            <button
-              onClick={() => onSectionChange('achievements')}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                currentSection === 'achievements'
-                  ? 'bg-sui-purple-100 text-sui-purple-700'
-                  : 'text-gray-600 hover:text-sui-purple-600'
-              }`}
-            >
-              <Trophy className="h-4 w-4" />
-              <span>Achievements</span>
-            </button>
-            <button
-              onClick={() => onSectionChange('profile')}
-              className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
-                currentSection === 'profile'
-                  ? 'bg-sui-blue-100 text-sui-blue-700'
-                  : 'text-gray-600 hover:text-sui-blue-600'
-              }`}
-            >
-              <User className="h-4 w-4" />
-              <span>Profile</span>
-            </button>
-          </nav>
-        )}
+        <nav className="hidden md:flex items-center space-x-6">
+          {isConnected && (
+            <>
+              <button
+                onClick={() => onSectionChange('dashboard')}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                  currentSection === 'dashboard'
+                    ? 'bg-sui-green-100 text-sui-green-700'
+                    : 'text-gray-600 hover:text-sui-green-600'
+                }`}
+              >
+                <BarChart3 className="h-4 w-4" />
+                <span>Dashboard</span>
+              </button>
+              <button
+                onClick={() => onSectionChange('achievements')}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                  currentSection === 'achievements'
+                    ? 'bg-sui-purple-100 text-sui-purple-700'
+                    : 'text-gray-600 hover:text-sui-purple-600'
+                }`}
+              >
+                <Trophy className="h-4 w-4" />
+                <span>Achievements</span>
+              </button>
+              <button
+                onClick={() => onSectionChange('profile')}
+                className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+                  currentSection === 'profile'
+                    ? 'bg-sui-blue-100 text-sui-blue-700'
+                    : 'text-gray-600 hover:text-sui-blue-600'
+                }`}
+              >
+                <User className="h-4 w-4" />
+                <span>Profile</span>
+              </button>
+            </>
+          )}
+          <button
+            onClick={() => onSectionChange('about')}
+            className={`flex items-center space-x-2 px-3 py-2 rounded-md transition-colors ${
+              currentSection === 'about'
+                ? 'bg-sui-orange-100 text-sui-orange-700'
+                : 'text-gray-600 hover:text-sui-orange-600'
+            }`}
+          >
+            <span>About Project</span>
+          </button>
+        </nav>
 
         {/* Wallet Connection */}
         <div className="flex items-center space-x-4">

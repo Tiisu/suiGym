@@ -75,14 +75,12 @@ export function GymGallerySection() {
   ]
 
   return (
-    <section className="py-24 bg-gradient-to-b from-gray-50 to-white">
+    <section className="py-24 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-sui-orange-600 to-sui-purple-600 bg-clip-text text-transparent">
-              Join the Fitness Revolution
-            </span>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
+            Join the Fitness Revolution
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             See how thousands of fitness enthusiasts are transforming their workouts into epic NFT quests. 
@@ -93,7 +91,7 @@ export function GymGallerySection() {
         {/* Community Stats */}
         <div className="grid md:grid-cols-4 gap-6 mb-16">
           {stats.map((stat, index) => (
-            <Card key={index} className="bg-white/80 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+            <Card key={index} className="bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
               <div className="p-6 text-center">
                 <div className="mx-auto w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-4">
                   <stat.icon className={`h-6 w-6 ${stat.color}`} />
@@ -123,11 +121,11 @@ export function GymGallerySection() {
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-110"
                   loading="lazy"
                 />
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {/* Dark overlay */}
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 {/* Floating achievement badge */}
-                <div className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                <div className="absolute top-4 right-4 w-10 h-10 bg-white/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                   <span className="text-white text-lg">
                     {index % 5 === 0 ? '🏆' : index % 4 === 0 ? '💎' : index % 3 === 0 ? '🥇' : index % 2 === 0 ? '🥈' : '🥉'}
                   </span>
@@ -146,25 +144,6 @@ export function GymGallerySection() {
           ))}
         </div>
 
-        {/* Call to Action */}
-        <div className="text-center mt-16">
-          <div className="bg-gradient-to-r from-sui-green-500 to-sui-cyan-500 rounded-2xl p-8 lg:p-12 text-white">
-            <h3 className="text-3xl lg:text-4xl font-bold mb-4">
-              Ready to Start Your Fitness Journey?
-            </h3>
-            <p className="text-xl mb-8 opacity-90">
-              Join thousands of fitness enthusiasts earning NFT achievements on the blockchain
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-sui-green-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors shadow-lg">
-                Start Your Quest
-              </button>
-              <button className="border-2 border-white text-white font-semibold px-8 py-3 rounded-lg hover:bg-white/10 transition-colors">
-                View Gallery
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   )

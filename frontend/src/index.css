@@ -59,59 +59,33 @@
   }
 }
 
-/* Custom gradient backgrounds for different sections */
-.hero-gradient {
-  background: linear-gradient(135deg, #22c55e 0%, #06b6d4 50%, #a855f7 100%);
-}
-
-.feature-gradient-1 {
-  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
-}
-
-.feature-gradient-2 {
-  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
-}
-
-.feature-gradient-3 {
-  background: linear-gradient(135deg, #a855f7 0%, #c084fc 100%);
-}
-
-/* NFT Rarity gradients */
+/* NFT Rarity solid colors */
 .rarity-common {
-  background: linear-gradient(135deg, #8B7355 0%, #A0845C 100%);
+  background: #8B7355;
 }
 
 .rarity-rare {
-  background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+  background: #4A90E2;
 }
 
 .rarity-epic {
-  background: linear-gradient(135deg, #9B59B6 0%, #8E44AD 100%);
+  background: #9B59B6;
 }
 
 .rarity-legendary {
-  background: linear-gradient(135deg, #F39C12 0%, #E67E22 100%);
+  background: #F39C12;
 }
 
 .rarity-mythic {
-  background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+  background: #E74C3C;
 }
 
-/* Glow effects for interactive elements */
-.glow-green {
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+/* Clean shadow effects for interactive elements */
+.shadow-clean {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: box-shadow 0.3s ease;
 }
 
-.glow-green:hover {
-  box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
-}
-
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3);
-  transition: box-shadow 0.3s ease;
-}
-
-.glow-cyan:hover {
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.5);
+.shadow-clean:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }

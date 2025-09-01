@@ -4,6 +4,8 @@ import { HeroSection } from './components/HeroSection'
 import { FeaturesSection } from './components/FeaturesSection'
 import { GymGallerySection } from './components/GymGallerySection'
 import { TestimonialSection } from './components/TestimonialSection'
+import { AboutProjectPage } from './components/AboutProjectPage'
+import { FAQSection } from './components/FAQSection'
 import { Dashboard } from './components/Dashboard'
 import { NFTGallery } from './components/NFTGallery'
 import { Footer } from './components/Footer'
@@ -55,6 +57,12 @@ function App() {
   }
 
   const renderCurrentSection = () => {
+    // Handle About Project page first (available to all users)
+    if (currentSection === 'about') {
+      return <AboutProjectPage onBack={() => setCurrentSection('hero')} />
+    }
+
+    // Handle homepage for non-connected users
     if (!isConnected) {
       return (
         <>
@@ -62,10 +70,12 @@ function App() {
           <FeaturesSection />
           <GymGallerySection />
           <TestimonialSection />
+          <FAQSection />
         </>
       )
     }
 
+    // Handle connected user sections
     switch (currentSection) {
       case 'dashboard':
         return (
@@ -81,16 +91,24 @@ function App() {
         return (
           <div className="container mx-auto px-4 py-8">
             <div className="text-center py-16">
-              <h1 className="text-4xl font-bold mb-4">
-                <span className="bg-gradient-to-r from-sui-blue-600 to-sui-purple-600 bg-clip-text text-transparent">
-                  Profile Settings
-                </span>
+              <h1 className="text-4xl font-bold mb-4 text-gray-900">
+                Profile Settings
               </h1>
               <p className="text-gray-600 text-lg">
                 Profile management features coming soon!
               </p>
             </div>
           </div>
+        )
+      case 'hero':
+        return (
+          <>
+            <HeroSection onStartQuest={handleStartQuest} />
+            <FeaturesSection />
+            <GymGallerySection />
+            <TestimonialSection />
+            <FAQSection />
+          </>
         )
       default:
         return (

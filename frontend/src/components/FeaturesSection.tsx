@@ -7,25 +7,25 @@ export function FeaturesSection() {
       icon: Gamepad2,
       title: "Gamified Wellness",
       description: "Transform your fitness routine into an engaging game with streaks, achievements, and rewards that keep you motivated every day.",
-      gradient: "feature-gradient-1",
-      iconColor: "text-sui-orange-100",
-      textColor: "text-white"
+      bgColor: "bg-sui-orange-50",
+      iconColor: "text-sui-orange-500",
+      textColor: "text-gray-900"
     },
     {
       icon: Shield,
       title: "Blockchain Tracking",
       description: "All your progress is securely stored on the Sui blockchain, ensuring your achievements are permanent and verifiable.",
-      gradient: "feature-gradient-2", 
-      iconColor: "text-sui-blue-100",
-      textColor: "text-white"
+      bgColor: "bg-sui-blue-50", 
+      iconColor: "text-sui-blue-500",
+      textColor: "text-gray-900"
     },
     {
       icon: Gem,
       title: "Collectible NFTs",
       description: "Earn unique, rare NFT achievements that showcase your fitness milestones and can be traded or displayed with pride.",
-      gradient: "feature-gradient-3",
-      iconColor: "text-sui-purple-100", 
-      textColor: "text-white"
+      bgColor: "bg-sui-purple-50",
+      iconColor: "text-sui-purple-500", 
+      textColor: "text-gray-900"
     }
   ]
 
@@ -55,10 +55,8 @@ export function FeaturesSection() {
       <div className="container mx-auto px-4">
         {/* Section header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-sui-green-600 to-sui-purple-600 bg-clip-text text-transparent">
-              Why Choose SuiGym?
-            </span>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-gray-900">
+            Why Choose SuiGym?
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Experience the future of fitness tracking with blockchain technology, 
@@ -71,10 +69,10 @@ export function FeaturesSection() {
           {features.map((feature, index) => (
             <Card 
               key={index} 
-              className={`${feature.gradient} border-0 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden group`}
+              className={`${feature.bgColor} border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden group`}
             >
               <CardHeader className="text-center pb-4">
-                <div className="mx-auto w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="mx-auto w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300 shadow-md">
                   <feature.icon className={`h-8 w-8 ${feature.iconColor}`} />
                 </div>
                 <CardTitle className={`text-2xl font-bold ${feature.textColor}`}>
@@ -82,7 +80,7 @@ export function FeaturesSection() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className={`text-center ${feature.textColor} opacity-90 leading-relaxed`}>
+                <CardDescription className={`text-center text-gray-600 leading-relaxed`}>
                   {feature.description}
                 </CardDescription>
               </CardContent>

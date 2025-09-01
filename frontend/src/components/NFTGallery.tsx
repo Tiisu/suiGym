@@ -114,10 +114,8 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">
-          <span className="bg-gradient-to-r from-sui-purple-600 to-sui-orange-600 bg-clip-text text-transparent">
-            Your NFT Collection
-          </span>
+        <h1 className="text-4xl font-bold mb-2 text-gray-900">
+          Your <span className="text-sui-purple-600">NFT Collection</span>
         </h1>
         <p className="text-gray-600 text-lg">
           Showcase your fitness achievements and rare collectibles
@@ -126,14 +124,14 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
 
       {/* Collection Stats */}
       <div className="grid md:grid-cols-4 gap-4 mb-8">
-        <Card className="bg-gradient-to-br from-sui-green-50 to-sui-green-100 border-sui-green-200">
+        <Card className="bg-sui-green-50 border-sui-green-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-sui-green-600">{mockNFTs.length}</div>
             <div className="text-sm text-sui-green-700">Total NFTs</div>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-sui-orange-50 to-sui-orange-100 border-sui-orange-200">
+        <Card className="bg-sui-orange-50 border-sui-orange-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-sui-orange-600">
               {mockNFTs.filter(nft => nft.rarity >= 4).length}
@@ -142,7 +140,7 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-sui-purple-50 to-sui-purple-100 border-sui-purple-200">
+        <Card className="bg-sui-purple-50 border-sui-purple-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-sui-purple-600">
               {new Set(mockNFTs.map(nft => nft.achievement_type)).size}
@@ -151,7 +149,7 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-sui-cyan-50 to-sui-cyan-100 border-sui-cyan-200">
+        <Card className="bg-sui-cyan-50 border-sui-cyan-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-sui-cyan-600">
               {Math.max(...mockNFTs.map(nft => nft.rarity))}
@@ -237,7 +235,7 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
           </div>
           <h3 className="text-xl font-semibold text-gray-700 mb-2">No NFTs Yet</h3>
           <p className="text-gray-500 mb-6">Start working out to earn your first achievement NFT!</p>
-          <Card className="max-w-md mx-auto bg-gradient-to-br from-sui-green-50 to-sui-cyan-50 border-sui-green-200">
+          <Card className="max-w-md mx-auto bg-sui-green-50 border-sui-green-200">
             <CardContent className="p-6 text-center">
               <Zap className="h-8 w-8 text-sui-green-500 mx-auto mb-3" />
               <h4 className="font-semibold text-sui-green-700 mb-2">Ready to Start?</h4>
