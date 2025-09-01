@@ -1,0 +1,50 @@
+{
+  "name": "suigym",
+  "version": "1.0.0",
+  "description": "Transform your fitness journey into an epic NFT quest on Sui blockchain",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "cd frontend && npm run dev",
+    "build": "npm run build:contracts && npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:contracts": "cd backend && sui move build",
+    "test": "npm run test:contracts",
+    "test:contracts": "cd backend && sui move test",
+    "deploy:devnet": "cd backend && sui client publish --gas-budget 100000000",
+    "deploy:testnet": "cd backend && sui client switch --env testnet && sui client publish --gas-budget 100000000",
+    "deploy:mainnet": "cd backend && sui client switch --env mainnet && sui client publish --gas-budget 200000000",
+    "install:all": "npm install && cd frontend && npm install",
+    "clean": "cd frontend && rm -rf node_modules dist && cd ../backend && rm -rf build",
+    "lint": "cd frontend && npm run lint",
+    "preview": "cd frontend && npm run preview"
+  },
+  "keywords": [
+    "sui",
+    "blockchain",
+    "fitness",
+    "nft",
+    "web3",
+    "move",
+    "dapp"
+  ],
+  "author": "SuiGym Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/suigym.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/suigym/issues"
+  },
+  "homepage": "https://github.com/yourusername/suigym#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
