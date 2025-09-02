@@ -11,6 +11,7 @@ import { Dashboard } from './components/Dashboard'
 import { NFTGallery } from './components/NFTGallery'
 import { Footer } from './components/Footer'
 import { WalletSelector } from './components/WalletSelector'
+import { WelcomeModal } from './components/WelcomeModal'
 import { useSuiGym } from './hooks/useSuiGym'
 import './index.css'
 
@@ -18,6 +19,7 @@ function App() {
   const currentAccount = useCurrentAccount()
   const [currentSection, setCurrentSection] = useState('hero')
   const [showWalletSelector, setShowWalletSelector] = useState(false)
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false)
   const { 
     profile, 
     isLoading, 
@@ -27,6 +29,15 @@ function App() {
     getUserProfile,
     isConnected 
   } = useSuiGym()
+
+  // Show welcome modal on first visit
+  useEffect(() => {
+    const hasVisited = localStorage.getItem('suigym-visited')
+    if (!hasVisited) {
+      setShowWelcomeModal(true)
+      localStorage.setItem('suigym-visited', 'true')
+    }
+  }, [])
 
   // Load user profile when wallet connects
   useEffect(() => {
@@ -41,6 +52,10 @@ function App() {
 
   const handleWalletConnected = () => {
     setCurrentSection('dashboard')
+  }
+
+  const handleGoToAbout = () => {
+    setCurrentSection('about')
   }
 
   const handleStartQuest = () => {
@@ -218,6 +233,12 @@ function App() {
         isOpen={showWalletSelector}
         onClose={() => setShowWalletSelector(false)}
         onSuccess={handleWalletConnected}
+      />
+      
+      <WelcomeModal
+        isOpen={showWelcomeModal}
+        onClose={() => setShowWelcomeModal(false)}
+        onGoToAbout={handleGoToAbout}
       />
     </div>
   )

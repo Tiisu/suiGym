@@ -69,33 +69,33 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center space-x-4">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
             <Button 
               onClick={onBack}
               variant="ghost" 
               size="sm"
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 self-start"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Back to Home</span>
             </Button>
-            <div className="h-6 w-px bg-gray-300"></div>
+            <div className="hidden sm:block h-6 w-px bg-gray-300"></div>
             <div className="flex items-center space-x-2">
-              <Code className="h-6 w-6 text-sui-green-600" />
-              <h1 className="text-2xl font-bold text-gray-900">About This Project</h1>
+              <Code className="h-5 w-5 sm:h-6 sm:w-6 text-sui-green-600" />
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">About This Project</h1>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
         {/* Introduction */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
             My Journey into <span className="text-sui-green-600">Move</span> & <span className="text-sui-blue-600">Sui</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed px-2">
             SuiGym is more than just a fitness app - it's my hands-on exploration into the world of 
             Move programming language and Sui blockchain development. This project represents my commitment 
             to learning cutting-edge Web3 technologies while building something meaningful.
@@ -103,16 +103,16 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
         </div>
 
         {/* Learning Journey */}
-        <div className="mb-20">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">What I Learned</h3>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+        <div className="mb-16 sm:mb-20">
+          <div className="text-center mb-8 sm:mb-12">
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">What I Learned</h3>
+            <p className="text-gray-600 max-w-2xl mx-auto px-2">
               This project challenged me to dive deep into blockchain development, combining theoretical 
               knowledge with practical implementation.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
             {learningHighlights.map((highlight, index) => (
               <Card key={index} className={`${highlight.bgColor} border-0 shadow-sm hover:shadow-md transition-all`}>
                 <CardContent className="p-6 text-center">
@@ -127,7 +127,7 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
           </div>
 
           {/* Detailed Learning Outcomes */}
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
             <Card className="bg-white border-0 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-xl text-gray-900">🎯 Technical Skills Gained</CardTitle>
@@ -183,19 +183,19 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
         </div>
 
         {/* Acknowledgments */}
-        <div className="mb-20">
-          <div className="text-center mb-12">
+        <div className="mb-16 sm:mb-20">
+          <div className="text-center mb-8 sm:mb-12">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <Heart className="h-6 w-6 text-red-500" />
-              <h3 className="text-3xl font-bold text-gray-900">Acknowledgments</h3>
+              <Heart className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">Acknowledgments</h3>
             </div>
-            <p className="text-gray-600 max-w-3xl mx-auto">
+            <p className="text-gray-600 max-w-3xl mx-auto px-2">
               This learning journey wouldn't have been possible without the incredible support, guidance, 
               and patience from these amazing individuals who believed in my potential and shared their knowledge freely.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {acknowledgments.map((person) => (
               <Card key={person.id} className="bg-white border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                 <CardContent className="p-6">
@@ -235,28 +235,28 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
         </div>
 
         {/* Sui Ghana Community */}
-        <div className="mb-16">
+        <div className="mb-12 sm:mb-16">
           <Card className="bg-sui-green-50 border-0 shadow-lg">
-            <CardContent className="p-10">
+            <CardContent className="p-6 sm:p-8 lg:p-10">
               <div className="text-center">
-                <div className="w-20 h-20 bg-sui-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Users className="h-10 w-10 text-white" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-sui-green-500 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                  <Users className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-6">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
                   Special Thanks to Sui Ghana Community 🇬🇭
                 </h3>
-                <p className="text-gray-700 leading-relaxed max-w-4xl mx-auto mb-8 text-lg">
+                <p className="text-gray-700 leading-relaxed max-w-4xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg px-2">
                   A heartfelt appreciation to the <strong>Sui Ghana Community</strong> for creating an 
                   inclusive and supportive environment where developers can learn, grow, and build together. 
                   Your workshops, mentorship programs, collaborative spirit, and commitment to fostering 
                   blockchain education in Ghana made this learning journey not just possible, but truly enjoyable.
                 </p>
-                <p className="text-gray-700 leading-relaxed max-w-4xl mx-auto mb-8">
+                <p className="text-gray-700 leading-relaxed max-w-4xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base px-2">
                   The community's dedication to nurturing local talent and building a strong blockchain 
                   ecosystem in Ghana is inspiring. Thank you for believing in developers like me and 
                   providing the resources, support, and encouragement needed to explore new technologies.
                 </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
                   <Button 
                     className="bg-sui-green-600 hover:bg-sui-green-700 text-white"
                     onClick={() => window.open('https://x.com/SuiNetworkGhana', '_blank')}
@@ -281,16 +281,16 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
         {/* Open Source & Repository */}
         <div className="text-center">
           <Card className="bg-gray-900 border-0 shadow-xl">
-            <CardContent className="p-10">
-              <h3 className="text-3xl font-bold text-white mb-6">
+            <CardContent className="p-6 sm:p-8 lg:p-10">
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-6">
                 Explore the Code & Learn
               </h3>
-              <p className="text-gray-300 mb-8 max-w-3xl mx-auto text-lg leading-relaxed">
+              <p className="text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto text-sm sm:text-base lg:text-lg leading-relaxed px-2">
                 This project is completely open source! Feel free to explore the Move smart contracts, 
                 React frontend implementation, and learn from the code. I welcome contributions, feedback, 
                 and discussions about the implementation. Let's build and learn together!
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-2">
                 <Button 
                   className="bg-white text-gray-900 hover:bg-gray-100"
                   onClick={() => window.open('https://github.com/Tiisu/suiGym', '_blank')}
