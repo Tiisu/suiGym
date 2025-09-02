@@ -11,6 +11,15 @@ interface WelcomeModalProps {
 
 export function WelcomeModal({ isOpen, onClose, onGoToAbout }: WelcomeModalProps) {
   const [showKeyboardHint, setShowKeyboardHint] = useState(false)
+  const [showReminder, setShowReminder] = useState(false)
+
+  const handleCloseAttempt = () => {
+    setShowReminder(true)
+    // Hide reminder after 3 seconds
+    setTimeout(() => {
+      setShowReminder(false)
+    }, 3000)
+  }
 
   useEffect(() => {
     if (!isOpen) return
@@ -52,11 +61,18 @@ export function WelcomeModal({ isOpen, onClose, onGoToAbout }: WelcomeModalProps
           {/* Header */}
           <div className="bg-gradient-to-r from-sui-green-500 to-sui-blue-500 p-6 text-white relative">
             <button
-              onClick={onClose}
+              onClick={handleCloseAttempt}
               className="absolute top-4 right-4 text-white hover:text-gray-200 transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
+            
+            {/* Reminder Message */}
+            {showReminder && (
+              <div className="absolute top-16 right-4 bg-red-500 text-white px-3 py-2 rounded-lg shadow-lg animate-bounce">
+                <div className="text-sm font-bold">Please press Q to continue!</div>
+              </div>
+            )}
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
                 <Code className="h-6 w-6 text-white" />
@@ -100,50 +116,32 @@ export function WelcomeModal({ isOpen, onClose, onGoToAbout }: WelcomeModalProps
               </ul>
             </div>
 
-            {/* Keyboard Shortcuts */}
-            <div className={`bg-gray-50 rounded-lg p-4 transition-all duration-500 ${
-              showKeyboardHint ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-2'
-            }`}>
-              <div className="flex items-center space-x-2 mb-3">
-                <Keyboard className="h-5 w-5 text-gray-600" />
-                <h4 className="font-semibold text-gray-900">Keyboard Shortcuts</h4>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                <div className="flex items-center space-x-2">
-                  <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono font-bold">Q</kbd>
-                  <span className="text-gray-600"><strong>Press Q</strong> to continue</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="flex space-x-1">
-                    <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono font-bold">Ctrl</kbd>
-                    <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono font-bold">Shift</kbd>
-                    <kbd className="px-2 py-1 bg-gray-200 rounded text-xs font-mono font-bold">Q</kbd>
-                  </div>
-                  <span className="text-gray-600"><strong>Press Ctrl + Shift + Q</strong> for about project</span>
-                </div>
-              </div>
-            </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button 
-                onClick={onClose}
-                className="flex-1 bg-sui-green-600 hover:bg-sui-green-700 text-white"
-              >
-                <Code className="mr-2 h-4 w-4" />
-                Press Q - Continue to SuiGym
-              </Button>
-              <Button 
-                onClick={() => {
-                  onGoToAbout()
-                  onClose()
-                }}
-                variant="outline"
-                className="flex-1 border-sui-blue-600 text-sui-blue-600 hover:bg-sui-blue-50"
-              >
-                <BookOpen className="mr-2 h-4 w-4" />
-                Learn About Project
-              </Button>
+            {/* Keyboard Instructions - Prominent */}
+            <div className="text-center pt-6 border-t border-gray-200">
+              <div className={`rounded-lg p-6 mb-4 transition-all duration-300 ${
+                showReminder ? 'bg-red-50 border-2 border-red-200' : 'bg-sui-green-50'
+              }`}>
+                <div className="text-center">
+                  <div className={`text-3xl font-bold mb-2 ${
+                    showReminder ? 'text-red-700 animate-pulse' : 'text-sui-green-700'
+                  }`}>
+                    Press <kbd className={`px-4 py-2 text-white rounded-lg text-3xl font-bold mx-2 ${
+                      showReminder ? 'bg-red-600' : 'bg-sui-green-600'
+                    }`}>Q</kbd> to Continue
+                  </div>
+                  <p className={`text-sm ${
+                    showReminder ? 'text-red-600' : 'text-sui-green-600'
+                  }`}>
+                    Or press <strong>Ctrl + Shift + Q</strong> to learn about the project
+                  </p>
+                  {showReminder && (
+                    <p className="text-red-700 font-bold text-sm mt-2 animate-bounce">
+                      ⚠️ You must use the keyboard to continue!
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Footer */}
