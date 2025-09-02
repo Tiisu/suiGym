@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useCurrentAccount, useConnectWallet } from '@mysten/dapp-kit'
+import { useCurrentAccount } from '@mysten/dapp-kit'
 import { Header } from './components/Header'
 import { HeroSection } from './components/HeroSection'
 import { FeaturesSection } from './components/FeaturesSection'
@@ -10,13 +10,14 @@ import { FAQSection } from './components/FAQSection'
 import { Dashboard } from './components/Dashboard'
 import { NFTGallery } from './components/NFTGallery'
 import { Footer } from './components/Footer'
+import { WalletSelector } from './components/WalletSelector'
 import { useSuiGym } from './hooks/useSuiGym'
 import './index.css'
 
 function App() {
   const currentAccount = useCurrentAccount()
-  const { mutate: connectWallet } = useConnectWallet()
   const [currentSection, setCurrentSection] = useState('hero')
+  const [showWalletSelector, setShowWalletSelector] = useState(false)
   const { 
     profile, 
     isLoading, 
@@ -35,18 +36,11 @@ function App() {
   }, [currentAccount, getUserProfile])
 
   const handleConnectWallet = () => {
-    connectWallet(
-      { wallet: 'Sui Wallet' },
-      {
-        onSuccess: () => {
-          console.log('Wallet connected successfully')
-          setCurrentSection('dashboard')
-        },
-        onError: (error) => {
-          console.error('Failed to connect wallet:', error)
-        }
-      }
-    )
+    setShowWalletSelector(true)
+  }
+
+  const handleWalletConnected = () => {
+    setCurrentSection('dashboard')
   }
 
   const handleStartQuest = () => {
@@ -221,6 +215,12 @@ function App() {
       </main>
 
       <Footer />
+      
+      <WalletSelector
+        isOpen={showWalletSelector}
+        onClose={() => setShowWalletSelector(false)}
+        onSuccess={handleWalletConnected}
+      />
     </div>
   )
 }

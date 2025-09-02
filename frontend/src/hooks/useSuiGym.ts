@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { useCurrentAccount, useSignAndExecuteTransactionBlock } from '@mysten/dapp-kit'
+import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit'
 import { TransactionBlock } from '@mysten/sui.js/transactions'
 import { suiClient, PACKAGE_ID, MODULE_NAME, CLOCK_ID } from '../lib/suiClient'
 import { Profile } from '../../../shared/types'
@@ -20,7 +20,7 @@ export interface WorkoutData {
 
 export const useSuiGym = () => {
   const currentAccount = useCurrentAccount()
-  const { mutate: signAndExecute } = useSignAndExecuteTransactionBlock()
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction()
   const [isLoading, setIsLoading] = useState(false)
   const [profile, setProfile] = useState<Profile | null>(null)
 
@@ -46,7 +46,7 @@ export const useSuiGym = () => {
 
       await new Promise((resolve, reject) => {
         signAndExecute(
-          { transactionBlock: txb },
+          { transaction: txb },
           {
             onSuccess: (result) => {
               console.log('Profile created successfully:', result)
@@ -99,7 +99,7 @@ export const useSuiGym = () => {
 
       await new Promise((resolve, reject) => {
         signAndExecute(
-          { transactionBlock: txb },
+          { transaction: txb },
           {
             onSuccess: (result) => {
               console.log('Workout logged successfully:', result)
@@ -138,7 +138,7 @@ export const useSuiGym = () => {
 
       await new Promise((resolve, reject) => {
         signAndExecute(
-          { transactionBlock: txb },
+          { transaction: txb },
           {
             onSuccess: (result) => {
               console.log('Weight updated successfully:', result)
