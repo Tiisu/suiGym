@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Code, Users, BookOpen, Keyboard, X } from "lucide-react"
+import { Code, Users, BookOpen, X } from "lucide-react"
 
 interface WelcomeModalProps {
   isOpen: boolean
@@ -10,7 +9,6 @@ interface WelcomeModalProps {
 }
 
 export function WelcomeModal({ isOpen, onClose, onGoToAbout }: WelcomeModalProps) {
-  const [showKeyboardHint, setShowKeyboardHint] = useState(false)
   const [showReminder, setShowReminder] = useState(false)
 
   const handleCloseAttempt = () => {
@@ -40,15 +38,9 @@ export function WelcomeModal({ isOpen, onClose, onGoToAbout }: WelcomeModalProps
     }
 
     document.addEventListener('keydown', handleKeyPress)
-    
-    // Show keyboard hint after 2 seconds
-    const timer = setTimeout(() => {
-      setShowKeyboardHint(true)
-    }, 2000)
 
     return () => {
       document.removeEventListener('keydown', handleKeyPress)
-      clearTimeout(timer)
     }
   }, [isOpen, onClose, onGoToAbout])
 

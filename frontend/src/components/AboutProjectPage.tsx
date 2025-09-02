@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Code, Heart, Users, BookOpen, Github, ExternalLink, ArrowLeft, Linkedin } from "lucide-react"
+import { Code, Heart, Users, BookOpen, Github, ExternalLink, ArrowLeft } from "lucide-react"
 
 // Fallback Twitter icon component
 const TwitterIcon = () => (
