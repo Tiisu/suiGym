@@ -30,10 +30,12 @@ function App() {
     isConnected 
   } = useSuiGym()
 
-  // Show welcome modal on first visit
+  // Show welcome modal on first visit (desktop only)
   useEffect(() => {
     const hasVisited = localStorage.getItem('suigym-visited')
-    if (!hasVisited) {
+    const isDesktop = window.innerWidth >= 1024 // 1024px is the lg breakpoint in Tailwind
+    
+    if (!hasVisited && isDesktop) {
       setShowWelcomeModal(true)
       localStorage.setItem('suigym-visited', 'true')
     }
