@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Code, Heart, Users, BookOpen, Github, ExternalLink, ArrowLeft } from "lucide-react"
+import { Code, Heart, Users, BookOpen, Github, ExternalLink, ArrowLeft, Linkedin } from "lucide-react"
 
 // Fallback Twitter icon component
 const TwitterIcon = () => (
@@ -14,31 +14,30 @@ interface AboutProjectPageProps {
 }
 
 export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
-  // You can replace these with actual photos and details
   const acknowledgments = [
     {
       id: 1,
-      name: "John Doe",
-      role: "Move Language Mentor",
-      photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80",
-      message: "Thank you for guiding me through the complexities of Move programming and helping me understand blockchain fundamentals.",
-      twitter: "@johndoe_dev"
+      name: "Mr. Sahabia Yakubu",
+      role: "MERN Stack Development Mentor",
+      photo: "/images/mentors/sahabia.jpg", // Upload his image here
+      message: "Heartfelt gratitude to Mr. Sahabia for his exceptional guidance in MERN stack development. Your patient teaching laid the foundation for building this dApp's frontend.",
+      twitter: "@sahadevgh"
     },
     {
       id: 2,
-      name: "Jane Smith",
-      role: "Sui Blockchain Expert",
-      photo: "https://images.unsplash.com/photo-1494790108755-2616b612b47c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-      message: "Your expertise in Sui development and patient explanations made this learning journey possible. Forever grateful!",
-      twitter: "@janesmith_sui"
+      name: "Mrs. Uju Edeh",
+      role: "Founder - Sui Network Ghana",
+      photo: "/images/mentors/uju.jpg", // Upload her image here
+      message: "Immense appreciation to Mrs. Uju, the visionary founder of Sui Network Ghana. Thank you for fostering a community where blockchain innovation thrives in Ghana.",
+      twitter: "@ujunwaedeh"
     },
     {
       id: 3,
-      name: "Michael Johnson",
-      role: "Code Review & Feedback",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80",
-      message: "Thank you for the countless code reviews and constructive feedback that helped me write better Move contracts.",
-      twitter: "@mikejohnson_code"
+      name: "Mr. Samuel (Lion)",
+      role: "Move Language & Sui Blockchain Mentor",
+      photo: "/images/mentors/samuel.jpg", // Upload his image here
+      message: "Profound thanks to Mr. Samuel for being an incredible mentor in Move programming and Sui blockchain development. This project wouldn't exist without your guidance and expertise.",
+      twitter: "@lionprado17"
     }
   ]
 
@@ -205,20 +204,26 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
                       src={person.photo}
                       alt={person.name}
                       className="w-24 h-24 rounded-full object-cover mx-auto mb-4 border-4 border-gray-100"
+                      onError={(e) => {
+                        // Fallback to a default avatar if image fails to load
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(person.name)}&background=10b981&color=fff&size=96`
+                      }}
                     />
                     <h4 className="text-lg font-bold text-gray-900">{person.name}</h4>
-                    <p className="text-sm text-sui-green-600 font-medium mb-2">{person.role}</p>
+                    <p className="text-sm text-sui-green-600 font-medium mb-3">{person.role}</p>
                     
-                    {/* Twitter Handle */}
-                    <a 
-                      href={`https://twitter.com/${person.twitter.replace('@', '')}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center space-x-1 text-blue-500 hover:text-blue-600 transition-colors text-sm"
-                    >
-                      <TwitterIcon />
-                      <span>{person.twitter}</span>
-                    </a>
+                    {/* Twitter Link */}
+                    <div className="flex justify-center mb-4">
+                      <a 
+                        href={`https://twitter.com/${person.twitter.replace('@', '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center space-x-1 text-blue-500 hover:text-blue-600 transition-colors text-sm"
+                      >
+                        <TwitterIcon />
+                        <span>{person.twitter}</span>
+                      </a>
+                    </div>
                   </div>
                   <blockquote className="text-gray-600 italic text-sm leading-relaxed text-center">
                     "{person.message}"
@@ -252,11 +257,18 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
                   providing the resources, support, and encouragement needed to explore new technologies.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button className="bg-sui-green-600 hover:bg-sui-green-700 text-white">
+                  <Button 
+                    className="bg-sui-green-600 hover:bg-sui-green-700 text-white"
+                    onClick={() => window.open('https://x.com/SuiNetworkGhana', '_blank')}
+                  >
                     <Users className="mr-2 h-4 w-4" />
                     Join Sui Ghana Community
                   </Button>
-                  <Button variant="outline" className="border-sui-green-600 text-sui-green-600 hover:bg-sui-green-100">
+                  <Button 
+                    variant="outline" 
+                    className="border-sui-green-600 text-sui-green-600 hover:bg-sui-green-100"
+                    onClick={() => window.open('https://docs.sui.io/concepts/sui-move-concepts', '_blank')}
+                  >
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Learn More About Sui
                   </Button>
@@ -279,13 +291,20 @@ export function AboutProjectPage({ onBack }: AboutProjectPageProps) {
                 and discussions about the implementation. Let's build and learn together!
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button className="bg-white text-gray-900 hover:bg-gray-100">
+                <Button 
+                  className="bg-white text-gray-900 hover:bg-gray-100"
+                  onClick={() => window.open('https://github.com/Tiisu/suiGym', '_blank')}
+                >
                   <Github className="mr-2 h-5 w-5" />
                   View Source Code on GitHub
                 </Button>
-                <Button variant="outline" className="border-white text-white hover:bg-white/10">
+                <Button 
+                  variant="outline" 
+                  className="border-white text-white hover:bg-white/10"
+                  onClick={() => window.open('https://docs.sui.io/', '_blank')}
+                >
                   <BookOpen className="mr-2 h-5 w-5" />
-                  Read Documentation
+                  Read Sui Documentation
                 </Button>
               </div>
             </CardContent>
