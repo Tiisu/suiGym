@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { WorkoutLogger } from "./WorkoutLogger"
 import { 
   Flame, 
   TrendingDown, 
@@ -24,18 +25,29 @@ interface DashboardProps {
     total_nfts: number
     longest_streak: number
   } | null
-  onLogWorkout: () => void
+  onLogWorkout: (workoutData?: any) => void
   onUpdateWeight: (weight: number) => void
+  isLoading?: boolean
 }
 
-export function Dashboard({ profile, onLogWorkout, onUpdateWeight }: DashboardProps) {
+export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = false }: DashboardProps) {
   const [newWeight, setNewWeight] = useState("")
+  const [showWorkoutLogger, setShowWorkoutLogger] = useState(false)
 
   const handleWeightUpdate = () => {
     if (newWeight && !isNaN(Number(newWeight))) {
       onUpdateWeight(Number(newWeight))
       setNewWeight("")
     }
+  }
+
+  const handleSimpleWorkout = () => {
+    onLogWorkout() // Simple workout logging
+  }
+
+  const handleDetailedWorkout = async (workoutData: any) => {
+    await onLogWorkout(workoutData)
+    setShowWorkoutLogger(false) // Close the detailed logger after successful submission
   }
 
   const mockProfile = profile || {
@@ -178,24 +190,53 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight }: DashboardPr
           {/* Middle Column - Actions */}
           <div className="lg:col-span-1 space-y-6">
             {/* Log Workout */}
-            <Card className="bg-white border-0 shadow-sm">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-sui-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Zap className="h-8 w-8 text-sui-orange-500" />
+            {!showWorkoutLogger ? (
+              <Card className="bg-white border-0 shadow-sm">
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-sui-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Zap className="h-8 w-8 text-sui-orange-500" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Log Today's Workout</h3>
+                    <p className="text-gray-600 text-sm mb-6">Keep your streak alive and earn achievements!</p>
+                    
+                    <div className="space-y-3">
+                      <Button 
+                        onClick={handleSimpleWorkout}
+                        disabled={isLoading}
+                        className="w-full bg-sui-orange-500 hover:bg-sui-orange-600 text-white font-semibold py-3"
+                      >
+                        {isLoading ? (
+                          <div className="flex items-center space-x-2">
+                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                            <span>Logging...</span>
+                          </div>
+                        ) : (
+                          <>
+                            <Plus className="mr-2 h-5 w-5" />
+                            Quick Log Workout
+                          </>
+                        )}
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => setShowWorkoutLogger(true)}
+                        variant="outline"
+                        className="w-full border-sui-orange-300 text-sui-orange-600 hover:bg-sui-orange-50"
+                      >
+                        <Zap className="mr-2 h-4 w-4" />
+                        Detailed Workout Log
+                      </Button>
+                    </div>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Log Today's Workout</h3>
-                  <p className="text-gray-600 text-sm mb-6">Keep your streak alive and earn achievements!</p>
-                  <Button 
-                    onClick={onLogWorkout}
-                    className="w-full bg-sui-orange-500 hover:bg-sui-orange-600 text-white font-semibold py-3"
-                  >
-                    <Plus className="mr-2 h-5 w-5" />
-                    Log Workout
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            ) : (
+              <WorkoutLogger 
+                onLogWorkout={handleDetailedWorkout}
+                isLoading={isLoading}
+              />
+            )}
 
             {/* Weight Tracking */}
             <Card className="bg-white border-0 shadow-sm">

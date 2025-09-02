@@ -1,8 +1,8 @@
 module suigym::wellness {
-    use std::option::{Self, Option};
+    use std::option::Option;
     use std::string::{Self, String};
     use std::vector;
-    use sui::object::{Self, UID};
+    use sui::object::UID;
     use sui::tx_context::{Self, TxContext};
     use sui::event;
     use sui::clock::{Self, Clock};
@@ -14,8 +14,6 @@ module suigym::wellness {
     /// Errors
     const EALREADY_LOGGED_TODAY: u64 = 1;
     const EINVALID_WEIGHT: u64 = 2;
-    const EACHIEVEMENT_ALREADY_EARNED: u64 = 3;
-    const EINVALID_ACHIEVEMENT: u64 = 4;
     const ENOT_OWNER: u64 = 5;
 
     /// Achievement rarity levels
@@ -40,6 +38,24 @@ module suigym::wellness {
         weight_lost: u64, // total weight lost in grams
         longest_streak: u64,
         profile_created_day: u64,
+        workout_history: vector<WorkoutEntry>, // detailed workout history
+    }
+
+    /// Individual workout entry with exercise details
+    public struct WorkoutEntry has store, copy, drop {
+        date: u64, // timestamp
+        exercises: vector<Exercise>,
+        total_duration_minutes: u64,
+        notes: String,
+    }
+
+    /// Individual exercise within a workout
+    public struct Exercise has store, copy, drop {
+        exercise_type: String, // "push_ups", "squats", "running", etc.
+        reps_or_duration: u64, // reps for strength, minutes for cardio
+        sets: u64, // number of sets
+        weight_kg: Option<u64>, // weight used (for weighted exercises)
+        distance_km: Option<u64>, // distance (for cardio, stored as meters)
     }
 
     /// NFT Achievement struct
@@ -72,6 +88,8 @@ module suigym::wellness {
         streak: u64,
         total_logs: u64,
         weight_lost: u64,
+        workout_summary: String, // summary of exercises performed
+        duration_minutes: u64,
     }
 
     /// Event emitted when an achievement NFT is earned
@@ -142,6 +160,7 @@ module suigym::wellness {
             weight_lost: 0,
             longest_streak: 0,
             profile_created_day: today,
+            workout_history: vector::empty<WorkoutEntry>(),
         };
 
         transfer::transfer(profile, sender);
@@ -165,8 +184,19 @@ module suigym::wellness {
         };
     }
 
-    /// Log a workout and check for achievements
-    entry fun log_workout(profile: &mut Profile, clock: &Clock, ctx: &mut TxContext) {
+    /// Log a detailed workout with exercises
+    entry fun log_workout_detailed(
+        profile: &mut Profile, 
+        exercise_types: vector<String>,
+        reps_or_durations: vector<u64>,
+        sets: vector<u64>,
+        weights_kg: vector<Option<u64>>,
+        distances_m: vector<Option<u64>>,
+        duration_minutes: u64,
+        notes: String,
+        clock: &Clock, 
+        ctx: &mut TxContext
+    ) {
         let sender = tx_context::sender(ctx);
         
         // Check ownership
@@ -181,6 +211,34 @@ module suigym::wellness {
             let last_day = *option::borrow(&profile.last_log_day);
             assert!(last_day < today, EALREADY_LOGGED_TODAY);
         };
+
+        // Create exercises vector
+        let mut exercises = vector::empty<Exercise>();
+        let mut i = 0;
+        let len = vector::length(&exercise_types);
+        
+        while (i < len) {
+            let exercise = Exercise {
+                exercise_type: *vector::borrow(&exercise_types, i),
+                reps_or_duration: *vector::borrow(&reps_or_durations, i),
+                sets: *vector::borrow(&sets, i),
+                weight_kg: *vector::borrow(&weights_kg, i),
+                distance_km: *vector::borrow(&distances_m, i),
+            };
+            vector::push_back(&mut exercises, exercise);
+            i = i + 1;
+        };
+
+        // Create workout entry
+        let workout_entry = WorkoutEntry {
+            date: now_ms,
+            exercises,
+            total_duration_minutes: duration_minutes,
+            notes,
+        };
+
+        // Add to workout history
+        vector::push_back(&mut profile.workout_history, workout_entry);
 
         // Update streak
         let new_streak = if (option::is_some(&profile.last_log_day)) {
@@ -203,6 +261,9 @@ module suigym::wellness {
             profile.longest_streak = new_streak;
         };
 
+        // Create workout summary
+        let workout_summary = create_workout_summary(&exercise_types);
+
         // Emit event
         event::emit(WorkoutLoggedEvent {
             owner: sender,
@@ -210,10 +271,54 @@ module suigym::wellness {
             streak: new_streak,
             total_logs: profile.total_logs,
             weight_lost: profile.weight_lost,
+            workout_summary,
+            duration_minutes,
         });
 
         // Check for achievements after logging workout
         check_and_mint_achievements(profile, clock, ctx);
+    }
+
+    /// Simple workout logging (for backward compatibility)
+    entry fun log_workout(profile: &mut Profile, clock: &Clock, ctx: &mut TxContext) {
+        // Create a simple "General Workout" entry
+        let exercise_types = vector[string::utf8(b"General Workout")];
+        let reps_or_durations = vector[1u64];
+        let sets = vector[1u64];
+        let weights_kg = vector[option::none<u64>()];
+        let distances_m = vector[option::none<u64>()];
+        
+        log_workout_detailed(
+            profile,
+            exercise_types,
+            reps_or_durations,
+            sets,
+            weights_kg,
+            distances_m,
+            30, // default 30 minutes
+            string::utf8(b""),
+            clock,
+            ctx
+        );
+    }
+
+    /// Create a summary string from exercise types
+    fun create_workout_summary(exercise_types: &vector<String>): String {
+        if (vector::length(exercise_types) == 0) {
+            return string::utf8(b"Workout completed")
+        };
+        
+        if (vector::length(exercise_types) == 1) {
+            return *vector::borrow(exercise_types, 0)
+        };
+        
+        // For multiple exercises, create a summary
+        let len = vector::length(exercise_types);
+        if (len == 2) {
+            string::utf8(b"Mixed workout")
+        } else {
+            string::utf8(b"Full body workout")
+        }
     }
 
     /// Check for new achievements and mint NFTs
@@ -380,7 +485,7 @@ module suigym::wellness {
     }
 
     /// View enhanced profile data
-    public fun get_profile_data(profile: &Profile): (String, u64, u64, Option<u64>, u64, u64, Option<u64>, u64) {
+    public fun get_profile_data(profile: &Profile): (String, u64, u64, Option<u64>, u64, u64, Option<u64>, u64, Option<u64>) {
         (
             profile.username, 
             profile.streak, 
@@ -393,7 +498,12 @@ module suigym::wellness {
             } else {
                 option::none<u64>()
             },
-            profile.longest_streak
+            profile.longest_streak,
+            if (option::is_some(&profile.starting_weight)) {
+                option::some(*option::borrow(&profile.starting_weight) / 1000)
+            } else {
+                option::none<u64>()
+            }
         )
     }
 
@@ -405,5 +515,71 @@ module suigym::wellness {
     /// Get achievement count by rarity
     public fun get_achievement_stats(profile: &Profile): (u64, u64) {
         (profile.total_nfts, vector::length(&profile.achievements_earned))
+    }
+
+    /// Get recent workout history (last N workouts)
+    public fun get_recent_workouts(profile: &Profile, count: u64): vector<WorkoutEntry> {
+        let history_len = vector::length(&profile.workout_history);
+        let mut result = vector::empty<WorkoutEntry>();
+        
+        if (history_len == 0) {
+            return result
+        };
+        
+        let start_idx = if (history_len > count) {
+            history_len - count
+        } else {
+            0
+        };
+        
+        let mut i = start_idx;
+        while (i < history_len) {
+            let workout = *vector::borrow(&profile.workout_history, i);
+            vector::push_back(&mut result, workout);
+            i = i + 1;
+        };
+        
+        result
+    }
+
+    /// Get workout statistics
+    public fun get_workout_stats(profile: &Profile): (u64, u64, u64) {
+        let total_workouts = vector::length(&profile.workout_history);
+        let mut total_duration = 0u64;
+        let mut total_exercises = 0u64;
+        
+        let mut i = 0;
+        while (i < total_workouts) {
+            let workout = vector::borrow(&profile.workout_history, i);
+            total_duration = total_duration + workout.total_duration_minutes;
+            total_exercises = total_exercises + vector::length(&workout.exercises);
+            i = i + 1;
+        };
+        
+        (total_workouts, total_duration, total_exercises)
+    }
+
+    /// Get exercise breakdown (count of each exercise type)
+    public fun get_exercise_breakdown(profile: &Profile): vector<String> {
+        let mut exercise_types = vector::empty<String>();
+        let history_len = vector::length(&profile.workout_history);
+        
+        let mut i = 0;
+        while (i < history_len) {
+            let workout = vector::borrow(&profile.workout_history, i);
+            let exercises_len = vector::length(&workout.exercises);
+            
+            let mut j = 0;
+            while (j < exercises_len) {
+                let exercise = vector::borrow(&workout.exercises, j);
+                if (!vector::contains(&exercise_types, &exercise.exercise_type)) {
+                    vector::push_back(&mut exercise_types, exercise.exercise_type);
+                };
+                j = j + 1;
+            };
+            i = i + 1;
+        };
+        
+        exercise_types
     }
 }

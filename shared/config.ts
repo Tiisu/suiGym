@@ -22,7 +22,7 @@ export const CONTRACT_CONFIG = {
   // Update this when deploying to different networks
   PACKAGE_ID: {
     DEVNET: '0x7b603192a53667f46adb07eb24501217bb8e64763709117c30e9b85db1e7355e',
-    TESTNET: '', // To be filled when deployed
+    TESTNET: '0xe3a869880f44115089b93b73e98db0c54c7d7ee59324d6b1e91d70b78811a5b7', // Your actual deployed package
     MAINNET: '', // To be filled when deployed
   },
   MODULE_NAME: 'wellness',
@@ -50,5 +50,5 @@ export const APP_CONFIG = {
   NAME: 'SuiGym',
   DESCRIPTION: 'Transform your fitness journey into an epic NFT quest',
   VERSION: '1.0.0',
-  CURRENT_NETWORK: 'DEVNET' as keyof typeof NETWORK_CONFIG,
+  CURRENT_NETWORK: 'TESTNET' as keyof typeof NETWORK_CONFIG,
 } as const;

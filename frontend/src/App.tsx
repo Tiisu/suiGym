@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useCurrentAccount, useConnectWallet } from '@mysten/dapp-kit'
 import { Header } from './components/Header'
 import { HeroSection } from './components/HeroSection'
 import { FeaturesSection } from './components/FeaturesSection'
@@ -9,60 +10,136 @@ import { FAQSection } from './components/FAQSection'
 import { Dashboard } from './components/Dashboard'
 import { NFTGallery } from './components/NFTGallery'
 import { Footer } from './components/Footer'
+import { useSuiGym } from './hooks/useSuiGym'
 import './index.css'
 
 function App() {
-  const [isConnected, setIsConnected] = useState(false)
+  const currentAccount = useCurrentAccount()
+  const { mutate: connectWallet } = useConnectWallet()
   const [currentSection, setCurrentSection] = useState('hero')
-  const [userProfile, setUserProfile] = useState<{
-    username: string
-    streak: number
-    total_logs: number
-    weight_lost: number
-    current_weight?: number
-    starting_weight?: number
-    total_nfts: number
-    longest_streak: number
-  } | null>(null)
+  const { 
+    profile, 
+    isLoading, 
+    createProfile, 
+    logWorkout, 
+    updateWeight, 
+    getUserProfile,
+    isConnected 
+  } = useSuiGym()
+
+  // Load user profile when wallet connects
+  useEffect(() => {
+    if (currentAccount) {
+      getUserProfile()
+    }
+  }, [currentAccount, getUserProfile])
 
   const handleConnectWallet = () => {
-    // Simulate wallet connection
-    setIsConnected(true)
-    setCurrentSection('dashboard')
-    
-    // Mock user profile
-    setUserProfile({
-      username: "FitnessWarrior",
-      streak: 12,
-      total_logs: 45,
-      weight_lost: 2500,
-      current_weight: 72500,
-      starting_weight: 75000,
-      total_nfts: 8,
-      longest_streak: 18
-    })
+    connectWallet(
+      { wallet: 'Sui Wallet' },
+      {
+        onSuccess: () => {
+          console.log('Wallet connected successfully')
+          setCurrentSection('dashboard')
+        },
+        onError: (error) => {
+          console.error('Failed to connect wallet:', error)
+        }
+      }
+    )
   }
 
   const handleStartQuest = () => {
-    if (isConnected) {
+    if (isConnected && profile) {
       setCurrentSection('dashboard')
+    } else if (isConnected && !profile) {
+      // User is connected but doesn't have a profile yet
+      handleCreateProfile()
     } else {
       handleConnectWallet()
     }
   }
 
-  const handleLogWorkout = () => {
-    // Simulate logging a workout
-    console.log('Workout logged!')
-    // In a real app, this would call the smart contract
-    alert('🎉 Workout logged successfully! Keep up the great work!')
+  const handleCreateProfile = async () => {
+    if (!isConnected) {
+      handleConnectWallet()
+      return
+    }
+
+    try {
+      const username = prompt('Enter your username:')
+      if (!username) return
+
+      const startingWeightStr = prompt('Enter your starting weight in kg (optional):')
+      const startingWeight = startingWeightStr ? parseFloat(startingWeightStr) : undefined
+
+      await createProfile(username, startingWeight)
+      alert('🎉 Profile created successfully! Welcome to SuiGym!')
+      
+      // Refresh profile data
+      setTimeout(() => {
+        getUserProfile()
+        setCurrentSection('dashboard')
+      }, 2000)
+    } catch (error) {
+      console.error('Failed to create profile:', error)
+      alert('❌ Failed to create profile. Please try again.')
+    }
   }
 
-  const handleUpdateWeight = (weight: number) => {
-    // Simulate weight update
-    console.log('Weight updated to:', weight)
-    // In a real app, this would call the smart contract
-    alert(`✅ Weight updated to ${weight} kg!`)
+  const handleLogWorkout = async (workoutData?: any) => {
+    if (!profile) {
+      alert('Please create a profile first!')
+      return
+    }
+
+    try {
+      if (workoutData) {
+        // Detailed workout logging
+        await logWorkout(profile.id, workoutData)
+      } else {
+        // Simple workout logging (backward compatibility)
+        await logWorkout(profile.id, {
+          exercises: [{
+            exerciseType: 'general_workout',
+            repsOrDuration: 1,
+            sets: 1
+          }],
+          durationMinutes: 30,
+          notes: ''
+        })
+      }
+      
+      alert('🎉 Workout logged successfully! Keep up the great work!')
+      
+      // Refresh profile data
+      setTimeout(() => {
+        getUserProfile()
+      }, 2000)
+    } catch (error) {
+      console.error('Failed to log workout:', error)
+      alert('❌ Failed to log workout. Please try again.')
+    }
+  }
+
+  const handleUpdateWeight = async (weight: number) => {
+    if (!profile) {
+      alert('Please create a profile first!')
+      return
+    }
+
+    try {
+      await updateWeight(profile.id, weight)
+      alert(`✅ Weight updated to ${weight} kg!`)
+      
+      // Refresh profile data
+      setTimeout(() => {
+        getUserProfile()
+      }, 2000)
+    } catch (error) {
+      console.error('Failed to update weight:', error)
+      alert('❌ Failed to update weight. Please try again.')
+    }
   }
 
   const renderCurrentSection = () => {
@@ -89,7 +166,7 @@ function App() {
       case 'dashboard':
         return (
           <Dashboard 
-            profile={userProfile}
+            profile={profile}
             onLogWorkout={handleLogWorkout}
             onUpdateWeight={handleUpdateWeight}
           />
@@ -122,7 +199,7 @@ function App() {
       default:
         return (
           <Dashboard 
-            profile={userProfile}
+            profile={profile}
             onLogWorkout={handleLogWorkout}
             onUpdateWeight={handleUpdateWeight}
           />
