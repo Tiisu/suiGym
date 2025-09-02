@@ -76,8 +76,8 @@ export const useSuiGym = () => {
       const exerciseTypes = workoutData.exercises.map((e: any) => e.exerciseType)
       const repsOrDurations = workoutData.exercises.map((e: any) => e.repsOrDuration)
       const sets = workoutData.exercises.map((e: any) => e.sets)
-      const weightsKg = workoutData.exercises.map((e: any) => e.weightKg ? [e.weightKg] : [])
-      const distancesM = workoutData.exercises.map((e: any) => e.distanceM ? [e.distanceM] : [])
+      const weightsKg = workoutData.exercises.map((e: any) => e.weightKg || null)
+      const distancesM = workoutData.exercises.map((e: any) => e.distanceM || null)
 
       txb.moveCall({
         target: `${PACKAGE_ID}::${MODULE_NAME}::log_workout_detailed`,
@@ -86,8 +86,8 @@ export const useSuiGym = () => {
           txb.pure.vector('string', exerciseTypes),
           txb.pure.vector('u64', repsOrDurations),
           txb.pure.vector('u64', sets),
-          txb.pure.vector('option<u64>', weightsKg.map(w => w.length > 0 ? w[0] : null)),
-          txb.pure.vector('option<u64>', distancesM.map(d => d.length > 0 ? d[0] : null)),
+          txb.pure.vector('option<u64>', weightsKg),
+          txb.pure.vector('option<u64>', distancesM),
           txb.pure.u64(workoutData.durationMinutes),
           txb.pure.string(workoutData.notes),
           txb.object(CLOCK_ID)

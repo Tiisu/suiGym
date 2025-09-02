@@ -1,11 +1,11 @@
 import { SuiClient } from '@mysten/sui.js/client'
 import { Transaction } from '@mysten/sui/transactions'
-import { NETWORK_CONFIG, CONTRACT_CONFIG, APP_CONFIG } from '../../../shared/config'
+import { CONTRACT_CONFIG, APP_CONFIG } from '../../../shared/config'
 
 // Initialize Sui client based on current network
 const currentNetwork = APP_CONFIG.CURRENT_NETWORK
 export const suiClient = new SuiClient({
-  url: NETWORK_CONFIG[currentNetwork].rpcUrl
+  url: 'https://fullnode.testnet.sui.io:443'
 })
 
 // Contract configuration
