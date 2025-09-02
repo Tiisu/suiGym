@@ -2,7 +2,7 @@ import { createNetworkConfig, SuiClientProvider, WalletProvider } from '@mysten/
 import { getFullnodeUrl } from '@mysten/sui.js/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode } from 'react'
-import { APP_CONFIG, NETWORK_CONFIG } from '../../../shared/config'
+import { APP_CONFIG } from '../../../shared/config'
 
 // Network configuration
 const { networkConfig } = createNetworkConfig({

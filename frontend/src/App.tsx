@@ -48,25 +48,19 @@ function App() {
       setCurrentSection('dashboard')
     } else if (isConnected && !profile) {
       // User is connected but doesn't have a profile yet
-      handleCreateProfile()
+      setCurrentSection('dashboard') // This will show the profile creation form
     } else {
       handleConnectWallet()
     }
   }
 
-  const handleCreateProfile = async () => {
+  const handleCreateProfile = async (username: string, startingWeight?: number) => {
     if (!isConnected) {
       handleConnectWallet()
       return
     }
 
     try {
-      const username = prompt('Enter your username:')
-      if (!username) return
-
-      const startingWeightStr = prompt('Enter your starting weight in kg (optional):')
-      const startingWeight = startingWeightStr ? parseFloat(startingWeightStr) : undefined
-
       await createProfile(username, startingWeight)
       alert('🎉 Profile created successfully! Welcome to SuiGym!')
       
@@ -163,6 +157,8 @@ function App() {
             profile={profile}
             onLogWorkout={handleLogWorkout}
             onUpdateWeight={handleUpdateWeight}
+            onCreateProfile={handleCreateProfile}
+            isLoading={isLoading}
           />
         )
       case 'achievements':
@@ -196,6 +192,8 @@ function App() {
             profile={profile}
             onLogWorkout={handleLogWorkout}
             onUpdateWeight={handleUpdateWeight}
+            onCreateProfile={handleCreateProfile}
+            isLoading={isLoading}
           />
         )
     }

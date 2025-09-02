@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit'
-import { TransactionBlock } from '@mysten/sui.js/transactions'
+import { Transaction } from '@mysten/sui/transactions'
 import { suiClient, PACKAGE_ID, MODULE_NAME, CLOCK_ID } from '../lib/suiClient'
 import { Profile } from '../../../shared/types'
 
@@ -30,10 +30,7 @@ export const useSuiGym = () => {
     
     setIsLoading(true)
     try {
-      const txb = new TransactionBlock()
-      
-      // Convert to Option<u64> format expected by Move
-      const startingWeightOption = startingWeightKg ? [Math.floor(startingWeightKg)] : []
+      const txb = new Transaction()
       
       txb.moveCall({
         target: `${PACKAGE_ID}::${MODULE_NAME}::create_profile`,
@@ -73,14 +70,14 @@ export const useSuiGym = () => {
     
     setIsLoading(true)
     try {
-      const txb = new TransactionBlock()
+      const txb = new Transaction()
       
       // Prepare exercise data arrays with proper Option types
-      const exerciseTypes = workoutData.exercises.map(e => e.exerciseType)
-      const repsOrDurations = workoutData.exercises.map(e => e.repsOrDuration)
-      const sets = workoutData.exercises.map(e => e.sets)
-      const weightsKg = workoutData.exercises.map(e => e.weightKg || null)
-      const distancesM = workoutData.exercises.map(e => e.distanceM || null)
+      const exerciseTypes = workoutData.exercises.map((e: any) => e.exerciseType)
+      const repsOrDurations = workoutData.exercises.map((e: any) => e.repsOrDuration)
+      const sets = workoutData.exercises.map((e: any) => e.sets)
+      const weightsKg = workoutData.exercises.map((e: any) => e.weightKg ? [e.weightKg] : [])
+      const distancesM = workoutData.exercises.map((e: any) => e.distanceM ? [e.distanceM] : [])
 
       txb.moveCall({
         target: `${PACKAGE_ID}::${MODULE_NAME}::log_workout_detailed`,
@@ -89,8 +86,8 @@ export const useSuiGym = () => {
           txb.pure.vector('string', exerciseTypes),
           txb.pure.vector('u64', repsOrDurations),
           txb.pure.vector('u64', sets),
-          txb.pure.vector('option<u64>', weightsKg),
-          txb.pure.vector('option<u64>', distancesM),
+          txb.pure.vector('option<u64>', weightsKg.map(w => w.length > 0 ? w[0] : null)),
+          txb.pure.vector('option<u64>', distancesM.map(d => d.length > 0 ? d[0] : null)),
           txb.pure.u64(workoutData.durationMinutes),
           txb.pure.string(workoutData.notes),
           txb.object(CLOCK_ID)
@@ -126,7 +123,7 @@ export const useSuiGym = () => {
     
     setIsLoading(true)
     try {
-      const txb = new TransactionBlock()
+      const txb = new Transaction()
       
       txb.moveCall({
         target: `${PACKAGE_ID}::${MODULE_NAME}::update_weight`,

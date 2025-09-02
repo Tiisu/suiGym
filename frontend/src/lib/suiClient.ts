@@ -1,5 +1,5 @@
-import { SuiClient, getFullnodeUrl } from '@mysten/sui.js/client'
-import { TransactionBlock } from '@mysten/sui.js/transactions'
+import { SuiClient } from '@mysten/sui.js/client'
+import { Transaction } from '@mysten/sui/transactions'
 import { NETWORK_CONFIG, CONTRACT_CONFIG, APP_CONFIG } from '../../../shared/config'
 
 // Initialize Sui client based on current network
@@ -14,7 +14,7 @@ export const MODULE_NAME = CONTRACT_CONFIG.MODULE_NAME
 export const CLOCK_ID = CONTRACT_CONFIG.CLOCK_OBJECT_ID
 
 // Helper function to create transaction blocks
-export const createTransactionBlock = () => new TransactionBlock()
+export const createTransactionBlock = () => new Transaction()
 
 // Exercise types for the workout logging
 export const EXERCISE_TYPES = [
@@ -59,7 +59,7 @@ export const formatExerciseName = (exerciseType: string): string => {
 // Helper to get exercise category
 export const getExerciseCategory = (exerciseType: string): string => {
   for (const [category, exercises] of Object.entries(EXERCISE_CATEGORIES)) {
-    if (exercises.includes(exerciseType as any)) {
+    if ((exercises as readonly string[]).includes(exerciseType)) {
       return category
     }
   }

@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { WorkoutLogger } from "./WorkoutLogger"
+import { ProfileCreation } from "./ProfileCreation"
 import { 
   Flame, 
   TrendingDown, 
@@ -27,10 +28,11 @@ interface DashboardProps {
   } | null
   onLogWorkout: (workoutData?: any) => void
   onUpdateWeight: (weight: number) => void
+  onCreateProfile: (username: string, startingWeight?: number) => void
   isLoading?: boolean
 }
 
-export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = false }: DashboardProps) {
+export function Dashboard({ profile, onLogWorkout, onUpdateWeight, onCreateProfile, isLoading = false }: DashboardProps) {
   const [newWeight, setNewWeight] = useState("")
   const [showWorkoutLogger, setShowWorkoutLogger] = useState(false)
 
@@ -42,27 +44,29 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
   }
 
   const handleSimpleWorkout = () => {
-    onLogWorkout() // Simple workout logging
+    if (!profile) {
+      alert('Please create a profile first!')
+      return
+    }
+    onLogWorkout()
   }
 
   const handleDetailedWorkout = async (workoutData: any) => {
+    if (!profile) {
+      alert('Please create a profile first!')
+      return
+    }
     await onLogWorkout(workoutData)
-    setShowWorkoutLogger(false) // Close the detailed logger after successful submission
+    setShowWorkoutLogger(false)
   }
 
-  const mockProfile = profile || {
-    username: "FitnessWarrior",
-    streak: 12,
-    total_logs: 45,
-    weight_lost: 2500, // in grams
-    current_weight: 72500,
-    starting_weight: 75000,
-    total_nfts: 8,
-    longest_streak: 18
+  // If no profile exists, show profile creation
+  if (!profile) {
+    return <ProfileCreation onCreateProfile={onCreateProfile} isLoading={isLoading} />
   }
 
-  const progressToNextMilestone = (mockProfile.total_logs % 10) * 10
-  const nextMilestone = Math.ceil(mockProfile.total_logs / 10) * 10
+  const progressToNextMilestone = (profile.total_logs % 10) * 10
+  const nextMilestone = Math.ceil(profile.total_logs / 10) * 10
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -72,17 +76,17 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, <span className="text-sui-green-600">{mockProfile.username}</span>
+                Welcome back, <span className="text-sui-green-600">{profile.username}</span>
               </h1>
               <p className="text-gray-600 mt-1">Ready to crush today's workout?</p>
             </div>
             <div className="hidden md:flex items-center space-x-4">
               <div className="text-right">
-                <div className="text-2xl font-bold text-sui-green-600">{mockProfile.streak}</div>
+                <div className="text-2xl font-bold text-sui-green-600">{profile.streak}</div>
                 <div className="text-sm text-gray-600">Day Streak</div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-sui-purple-600">{mockProfile.total_nfts}</div>
+                <div className="text-2xl font-bold text-sui-purple-600">{profile.total_nfts}</div>
                 <div className="text-sm text-gray-600">NFTs Earned</div>
               </div>
             </div>
@@ -98,7 +102,7 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Current Streak</p>
-                  <p className="text-3xl font-bold text-sui-orange-600">{mockProfile.streak}</p>
+                  <p className="text-3xl font-bold text-sui-orange-600">{profile.streak}</p>
                   <p className="text-sm text-gray-500">days</p>
                 </div>
                 <div className="w-12 h-12 bg-sui-orange-50 rounded-lg flex items-center justify-center">
@@ -113,7 +117,7 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Total Workouts</p>
-                  <p className="text-3xl font-bold text-sui-blue-600">{mockProfile.total_logs}</p>
+                  <p className="text-3xl font-bold text-sui-blue-600">{profile.total_logs}</p>
                   <p className="text-sm text-gray-500">sessions</p>
                 </div>
                 <div className="w-12 h-12 bg-sui-blue-50 rounded-lg flex items-center justify-center">
@@ -128,7 +132,7 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">NFTs Earned</p>
-                  <p className="text-3xl font-bold text-sui-purple-600">{mockProfile.total_nfts}</p>
+                  <p className="text-3xl font-bold text-sui-purple-600">{profile.total_nfts}</p>
                   <p className="text-sm text-gray-500">achievements</p>
                 </div>
                 <div className="w-12 h-12 bg-sui-purple-50 rounded-lg flex items-center justify-center">
@@ -143,7 +147,7 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">Weight Lost</p>
-                  <p className="text-3xl font-bold text-sui-green-600">{(mockProfile.weight_lost / 1000).toFixed(1)}</p>
+                  <p className="text-3xl font-bold text-sui-green-600">{(profile.weight_lost / 1000).toFixed(1)}</p>
                   <p className="text-sm text-gray-500">kg</p>
                 </div>
                 <div className="w-12 h-12 bg-sui-green-50 rounded-lg flex items-center justify-center">
@@ -164,20 +168,20 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
                   <Avatar className="w-20 h-20 mx-auto mb-4">
                     <AvatarImage src="/api/placeholder/80/80" />
                     <AvatarFallback className="bg-sui-green-500 text-white text-xl font-bold">
-                      {mockProfile.username.slice(0, 2).toUpperCase()}
+                      {profile.username.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">{mockProfile.username}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-1">{profile.username}</h3>
                   <p className="text-gray-600 mb-4">Fitness Enthusiast</p>
                   
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div className="bg-gray-50 rounded-lg p-3">
-                      <div className="text-lg font-bold text-gray-900">{mockProfile.longest_streak}</div>
+                      <div className="text-lg font-bold text-gray-900">{profile.longest_streak}</div>
                       <div className="text-xs text-gray-600">Best Streak</div>
                     </div>
                     <div className="bg-gray-50 rounded-lg p-3">
                       <div className="text-lg font-bold text-gray-900">
-                        {mockProfile.starting_weight ? (mockProfile.starting_weight / 1000).toFixed(1) : 'N/A'}
+                        {profile.starting_weight ? (profile.starting_weight / 1000).toFixed(1) : 'N/A'}
                       </div>
                       <div className="text-xs text-gray-600">Start Weight</div>
                     </div>
@@ -246,13 +250,13 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
                 <div className="grid grid-cols-2 gap-3 mb-4">
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
                     <div className="text-lg font-bold text-gray-900">
-                      {mockProfile.starting_weight ? (mockProfile.starting_weight / 1000).toFixed(1) : 'N/A'}
+                      {profile.starting_weight ? (profile.starting_weight / 1000).toFixed(1) : 'N/A'}
                     </div>
                     <div className="text-xs text-gray-600">Starting (kg)</div>
                   </div>
                   <div className="bg-gray-50 rounded-lg p-3 text-center">
                     <div className="text-lg font-bold text-gray-900">
-                      {mockProfile.current_weight ? (mockProfile.current_weight / 1000).toFixed(1) : 'N/A'}
+                      {profile.current_weight ? (profile.current_weight / 1000).toFixed(1) : 'N/A'}
                     </div>
                     <div className="text-xs text-gray-600">Current (kg)</div>
                   </div>
@@ -284,11 +288,11 @@ export function Dashboard({ profile, onLogWorkout, onUpdateWeight, isLoading = f
                   <Trophy className="h-5 w-5 text-sui-cyan-500" />
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
-                  {nextMilestone - mockProfile.total_logs} workouts until your next achievement
+                  {nextMilestone - profile.total_logs} workouts until your next achievement
                 </p>
                 <Progress value={progressToNextMilestone} className="mb-3" />
                 <div className="flex justify-between text-sm text-gray-500">
-                  <span>{mockProfile.total_logs}</span>
+                  <span>{profile.total_logs}</span>
                   <span>{nextMilestone}</span>
                 </div>
               </CardContent>
