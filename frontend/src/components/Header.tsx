@@ -76,14 +76,9 @@ export function Header({ isConnected, onConnectWallet, currentSection, onSection
         {/* Wallet Connection */}
         <div className="flex items-center space-x-4">
           {!isConnected ? (
-            <>
-              <Button variant="ghost" size="sm">
-                Sign In
-              </Button>
-              <Button onClick={onConnectWallet} size="sm">
-                Connect Wallet
-              </Button>
-            </>
+            <Button onClick={onConnectWallet} size="sm">
+              Connect Wallet
+            </Button>
           ) : (
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-2 px-3 py-2 bg-sui-green-50 rounded-lg">

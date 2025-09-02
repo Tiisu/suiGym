@@ -1,74 +1,95 @@
+import { useState, useEffect } from 'react'
+import { useCurrentAccount } from '@mysten/dapp-kit'
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Trophy, Calendar, Star, Flame, Target, Weight, Zap } from "lucide-react"
+import { Trophy, Calendar, Star, Flame, Target, Weight, Zap, RefreshCw } from "lucide-react"
 import { ACHIEVEMENT_CONFIG } from "../../../shared/config"
-
-interface NFT {
-  id: string
-  name: string
-  description: string
-  achievement_type: 'streak' | 'milestone' | 'weight_loss' | 'special'
-  rarity: 1 | 2 | 3 | 4 | 5
-  earned_date: number
-  image_url?: string
-}
+import { suiClient, PACKAGE_ID, MODULE_NAME } from '../lib/suiClient'
+import { AchievementNFT } from '../../../shared/types'
 
 interface NFTGalleryProps {
-  nfts?: NFT[]
+  profile?: {
+    id: string
+    total_nfts: number
+    achievements_earned: string[]
+  } | null
 }
 
-export function NFTGallery({ nfts }: NFTGalleryProps) {
-  // Mock NFTs for demonstration
-  const mockNFTs: NFT[] = nfts || [
-    {
-      id: "1",
-      name: "First Steps",
-      description: "Completed your first workout",
-      achievement_type: "milestone",
-      rarity: 1,
-      earned_date: Date.now() - 86400000 * 10,
-    },
-    {
-      id: "2", 
-      name: "Week Warrior",
-      description: "Maintained a 7-day workout streak",
-      achievement_type: "streak",
-      rarity: 2,
-      earned_date: Date.now() - 86400000 * 5,
-    },
-    {
-      id: "3",
-      name: "Weight Crusher",
-      description: "Lost 2kg of body weight",
-      achievement_type: "weight_loss", 
-      rarity: 3,
-      earned_date: Date.now() - 86400000 * 3,
-    },
-    {
-      id: "4",
-      name: "Dedication Master",
-      description: "Completed 50 total workouts",
-      achievement_type: "milestone",
-      rarity: 4,
-      earned_date: Date.now() - 86400000 * 1,
-    },
-    {
-      id: "5",
-      name: "Legendary Streak",
-      description: "Achieved a 30-day workout streak",
-      achievement_type: "streak",
-      rarity: 5,
-      earned_date: Date.now() - 86400000 * 2,
-    },
-    {
-      id: "6",
-      name: "New Year Champion",
-      description: "Special achievement for New Year commitment",
-      achievement_type: "special",
-      rarity: 4,
-      earned_date: Date.now() - 86400000 * 7,
+export function NFTGallery({ profile }: NFTGalleryProps) {
+  const currentAccount = useCurrentAccount()
+  const [nfts, setNfts] = useState<AchievementNFT[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Fetch user's NFTs from blockchain
+  const fetchUserNFTs = async () => {
+    if (!currentAccount) {
+      setNfts([])
+      return
     }
-  ]
+
+    setIsLoading(true)
+    setError(null)
+    
+    try {
+      // Get all objects owned by the user
+      const objects = await suiClient.getOwnedObjects({
+        owner: currentAccount.address,
+        filter: {
+          StructType: `${PACKAGE_ID}::${MODULE_NAME}::AchievementNFT`
+        },
+        options: {
+          showContent: true,
+          showType: true
+        }
+      })
+
+      const fetchedNFTs: AchievementNFT[] = []
+      
+      for (const obj of objects.data) {
+        if (obj.data?.content && 'fields' in obj.data.content) {
+          const fields = obj.data.content.fields as any
+          
+          const nft: AchievementNFT = {
+            id: obj.data.objectId,
+            name: fields.name,
+            description: fields.description,
+            image_url: fields.image_url,
+            achievement_type: fields.achievement_type as 'streak' | 'milestone' | 'weight_loss' | 'special',
+            rarity: parseInt(fields.rarity) as 1 | 2 | 3 | 4 | 5,
+            earned_date: parseInt(fields.earned_date),
+            user_stats_snapshot: {
+              total_workouts: parseInt(fields.user_stats_snapshot.total_workouts),
+              current_streak: parseInt(fields.user_stats_snapshot.current_streak),
+              weight_lost: parseInt(fields.user_stats_snapshot.weight_lost),
+              days_since_start: parseInt(fields.user_stats_snapshot.days_since_start)
+            }
+          }
+          
+          fetchedNFTs.push(nft)
+        }
+      }
+      
+      // Sort by earned date (newest first)
+      fetchedNFTs.sort((a, b) => b.earned_date - a.earned_date)
+      setNfts(fetchedNFTs)
+      
+    } catch (err) {
+      console.error('Error fetching NFTs:', err)
+      setError('Failed to load your NFT collection. Please try again.')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Fetch NFTs when component mounts or account changes
+  useEffect(() => {
+    fetchUserNFTs()
+  }, [currentAccount])
+
+  const handleRefresh = () => {
+    fetchUserNFTs()
+  }
 
   const getAchievementIcon = (type: string) => {
     switch (type) {
@@ -103,30 +124,51 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
     })
   }
 
-  const groupedNFTs = mockNFTs.reduce((acc, nft) => {
+  const groupedNFTs = nfts.reduce((acc, nft) => {
     if (!acc[nft.rarity]) {
       acc[nft.rarity] = []
     }
     acc[nft.rarity].push(nft)
     return acc
-  }, {} as Record<number, NFT[]>)
+  }, {} as Record<number, AchievementNFT[]>)
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2 text-gray-900">
-          Your <span className="text-sui-purple-600">NFT Collection</span>
-        </h1>
-        <p className="text-gray-600 text-lg">
-          Showcase your fitness achievements and rare collectibles
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2 text-gray-900">
+              Your <span className="text-sui-purple-600">NFT Collection</span>
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Showcase your fitness achievements and rare collectibles
+            </p>
+          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={isLoading}
+            className="flex items-center space-x-2 px-4 py-2 bg-sui-purple-600 text-white rounded-lg hover:bg-sui-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <span>{isLoading ? 'Loading...' : 'Refresh'}</span>
+          </button>
+        </div>
       </div>
+
+      {/* Error State */}
+      {error && (
+        <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600">{error}</p>
+        </div>
+      )}
 
       {/* Collection Stats */}
       <div className="grid md:grid-cols-4 gap-4 mb-8">
         <Card className="bg-sui-green-50 border-sui-green-200">
           <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-sui-green-600">{mockNFTs.length}</div>
+            <div className="text-2xl font-bold text-sui-green-600">
+              {profile?.total_nfts || nfts.length}
+            </div>
             <div className="text-sm text-sui-green-700">Total NFTs</div>
           </CardContent>
         </Card>
@@ -134,7 +176,7 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
         <Card className="bg-sui-orange-50 border-sui-orange-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-sui-orange-600">
-              {mockNFTs.filter(nft => nft.rarity >= 4).length}
+              {nfts.filter(nft => nft.rarity >= 4).length}
             </div>
             <div className="text-sm text-sui-orange-700">Rare & Above</div>
           </CardContent>
@@ -143,7 +185,7 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
         <Card className="bg-sui-purple-50 border-sui-purple-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-sui-purple-600">
-              {new Set(mockNFTs.map(nft => nft.achievement_type)).size}
+              {new Set(nfts.map(nft => nft.achievement_type)).size}
             </div>
             <div className="text-sm text-sui-purple-700">Categories</div>
           </CardContent>
@@ -152,7 +194,7 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
         <Card className="bg-sui-cyan-50 border-sui-cyan-200">
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-sui-cyan-600">
-              {Math.max(...mockNFTs.map(nft => nft.rarity))}
+              {nfts.length > 0 ? Math.max(...nfts.map(nft => nft.rarity)) : 0}
             </div>
             <div className="text-sm text-sui-cyan-700">Highest Rarity</div>
           </CardContent>
@@ -227,8 +269,19 @@ export function NFTGallery({ nfts }: NFTGalleryProps) {
           )
         })}
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="text-center py-16">
+          <div className="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <RefreshCw className="h-12 w-12 text-gray-400 animate-spin" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">Loading Your NFTs...</h3>
+          <p className="text-gray-500">Fetching your achievements from the blockchain</p>
+        </div>
+      )}
+
       {/* Empty State */}
-      {mockNFTs.length === 0 && (
+      {!isLoading && nfts.length === 0 && (
         <div className="text-center py-16">
           <div className="w-24 h-24 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-6">
             <Trophy className="h-12 w-12 text-gray-400" />
