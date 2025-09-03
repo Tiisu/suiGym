@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/" }
+  ],
+  "env": {
+    "VITE_API_URL": "https://wiki-spark-collaborate.onrender.com"
+  }
+}
