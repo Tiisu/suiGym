@@ -116,7 +116,7 @@ See [PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md) for detailed information
 ## 🚀 Quick Start (5 minutes)
 
 ### Option A: Try the Live Demo
-1. Visit: **[suigym-demo.vercel.app](https://suigym-demo.vercel.app)** *(replace with actual URL)*
+1. Visit: **[suigym-demo.vercel.app](https://sui-gym-frontend-5hbt.vercel.app/)** 
 2. Install [Sui Wallet](https://chrome.google.com/webstore/detail/sui-wallet/opcgpfmipidbgpenhmajoajpbobppdil)
 3. Get testnet SUI from [faucet](https://faucet.devnet.sui.io/)
 4. Connect wallet and start your fitness journey!
@@ -350,7 +350,7 @@ We're actively looking for contributors! Here's how you can help:
 - Create governance features
 
 ### 🎯 **First-Time Contributors**
-Check out issues labeled [`good first issue`](https://github.com/yourusername/suigym/labels/good%20first%20issue) - perfect for getting started!
+Check out issues labeled [`good first issue`](https://github.com/Tiisu/suigym/labels/good%20first%20issue) - perfect for getting started!
 
 ### Development Setup
 1. Fork the repo
@@ -371,14 +371,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Radix UI](https://www.radix-ui.com/) for beautiful, accessible components
 - The fitness community for inspiration and motivation
 
-## 🌟 Community
-
-Join our growing community of fitness enthusiasts and Web3 builders:
-
-- 💬 **Discord**: [SuiGym Community](https://discord.gg/suigym) *(coming soon)*
-- 🐦 **Twitter**: [@SuiGymApp](https://twitter.com/SuiGymApp) *(coming soon)*
-- 📧 **Email**: team@suigym.dev
-- 📍 **Meetups**: Regularly featured at Sui Ghana events
 
 ## 🔗 Resources
 
@@ -391,6 +383,6 @@ Join our growing community of fitness enthusiasts and Web3 builders:
 
 **🚀 Ready to gamify your fitness journey?**
 
-[**Try SuiGym Now →**](https://suigym-demo.vercel.app) | [**Join Discord →**](https://discord.gg/suigym) | [**Contribute →**](https://github.com/yourusername/suigym/issues)
+[**Try SuiGym Now →**](https://sui-gym-frontend-5hbt.vercel.app/) | [**Contribute →**](https://github.com/Tiisu/suigym/issues)
 
-*Built with ❤️ by the Sui Ghana community*
+*Built with ❤️ by Tiisu* Just Press Q
