@@ -502,7 +502,7 @@ module suigym::wellness {
             if (option::is_some(&profile.starting_weight)) {
                 option::some(*option::borrow(&profile.starting_weight) / 1000)
             } else {
-                option::none<u64>()
+                option::none<u64>()5
             }
         )
     }
